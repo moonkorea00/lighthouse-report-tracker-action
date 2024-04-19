@@ -1,0 +1,15 @@
+name: 'Lighthouse Report Tracker'
+description: 'Track and compare Lighthouse CI reports in pull request'
+inputs:
+  secret:
+    description: 'Your GITHUB_TOKEN used to create a comparison table in the pull request. By default is created as secrets.GITHUB_TOKEN.'
+    required: true
+  outputDir:
+    description: 'The directory where your lighthouse reports are uploaded'
+    required: true
+    
+# outputs:
+
+runs:
+  using: 'node20'
+  main: 'index.js'
