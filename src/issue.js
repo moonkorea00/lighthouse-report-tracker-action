@@ -17,21 +17,27 @@ const getLightHouseIssue = async (octokit, context) => {
 const mutateLighthouseIssue = async ({ octokit, context, reports }) => {
   const { issue, body } = await getLightHouseIssue(octokit, context);
 
-  const issueBody = JSON.stringify([reports, ...body]);
+  let issueBody = [reports, ...body];
+  const maxLength = 50000;
+
+  if (JSON.stringify(issueBody).length > maxLength) {
+    issueBody = [reports, ...body.slice(0, -5)];
+  }
+  const serializedIssueBody = JSON.stringify(issueBody);
 
   if (issue) {
     return await octokit.rest.issues.update({
       owner: context.repo.owner,
       repo: context.repo.repo,
       issue_number: issue.number,
-      body: issueBody,
+      body: serializedIssueBody,
     });
   }
   await octokit.rest.issues.create({
     owner: context.repo.owner,
     repo: context.repo.repo,
     title: issueTitle,
-    body: issueBody,
+    body: serializedIssueBody,
     labels: ['lighthouse'],
   });
 };
