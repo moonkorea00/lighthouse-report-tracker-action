@@ -6,14 +6,19 @@ const {
   createPullRequestComment,
   createReportComparisonTable,
 } = require('./comment');
+const { mutateLighthouseIssue } = require('./issue');
+const { formatTrackerReports } = require('./utils');
 
 async function main() {
   try {
     const token = core.getInput('secret');
     const octokit = github.getOctokit(token);
     const outputDir = core.getInput('outputDir');
-    const reports = JSON.parse(fs.readFileSync(`${outputDir}/manifest.json`));
     const context = github.context;
+    const reports = formatTrackerReports(
+      context,
+      JSON.parse(fs.readFileSync(`${outputDir}/manifest.json`))
+    );
 
     if (
       context.eventName === 'pull_request' &&
@@ -30,6 +35,14 @@ async function main() {
       core.info('✅ Creating Lighthouse comparison table in pull request..');
 
       await createPullRequestComment({ octokit, context, body: commentBody });
+
+      core.info('✅ Updating Lighthouse report log..');
+
+      await mutateLighthouseIssue({
+        octokit,
+        context,
+        reports,
+      });
     }
   } catch (err) {
     core.setFailed(`❌ Failed running action with error : ${err}`);

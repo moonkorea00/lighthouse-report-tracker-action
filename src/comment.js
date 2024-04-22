@@ -1,4 +1,5 @@
 const { getLightHouseIssue } = require('./issue');
+const { formatMetricValueDifference } = require('./utils');
 
 const createPullRequestComment = async ({ octokit, context, body }) => {
   const comments = await octokit.rest.issues.listComments({
@@ -27,34 +28,23 @@ const createPullRequestComment = async ({ octokit, context, body }) => {
   });
 };
 
-const formatMetricValueDifference = (curr, prev) => {
-  if (prev === '➖') return '➖';
-  const diff = prev - curr;
-  return `${
-    diff === 0 ? '➖' : diff > 0 ? '🔻' + -diff : '🔺' + Math.abs(diff)
-  }`;
-};
-
 const createReportComparisonTable = async ({
   octokit,
   context,
   currentReports,
 }) => {
-  const lighthouseIssue = await getLightHouseIssue(octokit, context);
-  const previousReports = lighthouseIssue
-    ? JSON.parse(JSON.stringify(lighthouseIssue.body))
-    : [];
+  const { body: previousReports } = await getLightHouseIssue(octokit, context);
 
   let commentBody = `### Lighthouse Report\n\n`;
 
-  currentReports.forEach(currReport => {
-    const prevReport = previousReports?.find(
+  currentReports.reports.forEach(currReport => {
+    const prevReport = previousReports[0]?.reports.find(
       prevReport => prevReport.url === currReport.url
     );
 
     const tableHeading = `#### ${currReport.url} \n`;
     const rowHeader = `| Metric | Previous Score ${
-      prevReport ? `(#${prevReport.pr})` : ''
+      prevReport ? `(#${previousReports[0].pr})` : ''
     } | Current Score(#${
       context.payload.pull_request.number
     }) | Difference |\n`;
