@@ -89,10 +89,10 @@ jobs:
           lhci autorun
 
       - name: Run Lighthouse Report Tracker
-        uses: moonkorea00/lighthouse-report-tracker@v1.0.0
+        uses: moonkorea00/lighthouse-report-tracker-action@v1.0.1
         with:
           secret: ${{ secrets.GITHUB_TOKEN }} # by default GitHub will create your token
-          outputDir: 'path/to/lighthouse/reports' # directory configured in your lighthouserc.js. defaults to './lhci'
+          outputDir: './lhci' # directory configured in your lighthouserc.js. defaults to './lhci'
 ```
 
 - In your repository's `Settings - Actions - General`, update the **Workflow permissions** to **Read and write permissions** in order to generate report tables in your pull request.
@@ -109,3 +109,9 @@ jobs:
 | :-------: | ------------------------------------------------------------------------------------------------------------------------------------ | :------: | :-----------: |
 |  secret   | The GitHub token required for API requests to create comments in pull requests. Use `${{ secrets.GITHUB_TOKEN }}` as the value.      | **Yes**  |               |
 | outputDir | The directory configured in your lighthouserc.js. Depending on how you run `lhci autorun`, reports will be stored in this directory. |    No    |   './lhci'    |
+
+<br>
+
+## License
+
+[MIT License](https://github.com/moonkorea00/lighthouse-report-tracker-action/blob/master/LICENSE) © 2023 Jeewon Moon
