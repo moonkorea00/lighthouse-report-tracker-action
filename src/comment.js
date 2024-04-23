@@ -1,5 +1,5 @@
 const { getLightHouseIssue } = require('./issue');
-const { formatMetricValueDifference } = require('./utils');
+const { formatMetricValueDifference, scoreIndicator } = require('./utils');
 
 const createPullRequestComment = async ({ octokit, context, body }) => {
   const comments = await octokit.rest.issues.listComments({
@@ -59,7 +59,7 @@ const createReportComparisonTable = async ({
       const prevValue = prevReport ? prevReport.summary[metric] * 100 : '➖';
       const difference = formatMetricValueDifference(currValue, prevValue);
 
-      baseTable += `| ${metric} | ${prevValue} | ${currValue} | ${difference} |\n`;
+      baseTable += `| ${metric} | ${prevValue} | ${currValue} ${scoreIndicator(currValue)} | ${difference} |\n`;
     });
 
     commentBody += baseTable + '\n\n';

@@ -28,4 +28,14 @@ const formatMetricValueDifference = (curr, prev) => {
   }`;
 };
 
-module.exports = { formatTrackerReports, formatMetricValueDifference };
+const scoreIndicator = score => {
+  if (score >= 90) return '🟢';
+  if (score >= 50) return '🟠';
+  return '🔴';
+};
+
+module.exports = {
+  formatTrackerReports,
+  formatMetricValueDifference,
+  scoreIndicator,
+};
