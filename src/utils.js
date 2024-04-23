@@ -20,8 +20,8 @@ const formatTrackerReports = (context, reports) => {
 const formatMetricValueDifference = (curr, prev) => {
   if (prev === '➖') return '➖';
 
-  const diff = prev - curr;
-  const absoluteDiff = Math.round(Math.abs(diff));
+  const diff = Math.trunc(prev) - Math.trunc(curr);
+  const absoluteDiff = Math.abs(diff);
 
   return `${
     diff === 0 ? '➖' : diff > 0 ? `🔻${absoluteDiff}` : `🔺${absoluteDiff}`
