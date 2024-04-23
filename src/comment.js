@@ -8,7 +8,9 @@ const createPullRequestComment = async ({ octokit, context, body }) => {
     issue_number: context.payload.pull_request.number,
   });
   const lighthouseReportTrackerComment = comments.data.find(
-    comment => comment.user.login === 'github-actions[bot]'
+    comment =>
+      comment.user.login === 'github-actions[bot]' &&
+      comment.body.startsWith('### Lighthouse Report')
   );
 
   if (lighthouseReportTrackerComment) {
